@@ -1,4 +1,5 @@
 import re
+from types import NoneType
 import requests
 from bs4 import BeautifulSoup
 import pandas
@@ -78,14 +79,44 @@ def obtener_url_privada_inmueble(url):
 # esta funcion obtiene los datos de un inmueble de la página yaencontre.com tras haber obtenido la url de dicho inmueble privada
 def scrapear_inmueble(url_privada):
     soup = BeautifulSoup(requests.get(url_privada, headers=headers).text, 'html.parser')
-    cantidad = soup.find('span', class_='d-block price').text.strip()    
+    precio = soup.find('span', class_='d-block price').text.strip()    
     nombre = soup.find('h1', id='title-realestate').text
+    imagenes = []
+    for imagen in soup.find_all('source', attrs = {'srcset' : True}):
+        imagenes.append(imagen['srcset'])
     descripcion = soup.find('div', class_='raw-format l-height-lg').text
+    try:
+        habitaciones = soup.find('div', class_='icon-room').next_element.text
+    except:
+        habitaciones = "N/S"
+    try:
+        banos = soup.find('div', class_='icon-bath').next_element.text
+    except:
+        banos = "N/S"
+    try:
+        metros2 = soup.find('div', class_='icon-meter').next_element.text
+    except:
+        metros2 = "N/S"
+    try:
+        telefono = soup.find('a', class_='button call btn icon-phone-2').next_element.text
+    except:
+        telefono = "N/S"
+    ubicacionesRaw = soup.find("script",type="application/ld+json").text
+    ubicacionesGroup = re.search(r"GeoCoordinates\",\"latitude\":(.*?),\"longitude\":(.*?)}", ubicacionesRaw)
+    ubicaciones = []
+    ubicaciones.append(ubicacionesGroup.group(1))
+    ubicaciones.append(ubicacionesGroup.group(2))
     datos_inmueble = {
         'nombre': nombre,
-        'precio': cantidad,
+        'precio': precio,
+        'imagenes': imagenes,
         'descripcion': descripcion,
         'enlace': url_privada,
+        'habitaciones': habitaciones,
+        'banos': banos,
+        'metros2': metros2,
+        'telefono': telefono,
+        'ubicacion': ubicaciones
     }
     #print(datos_inmueble)
     return datos_inmueble
