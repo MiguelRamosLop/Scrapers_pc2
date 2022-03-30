@@ -84,28 +84,37 @@ def scrapear_inmueble(url_privada):
     imagenes = []
     for imagen in soup.find_all('source', attrs = {'srcset' : True}):
         imagenes.append(imagen['srcset'])
-    descripcion = soup.find('div', class_='raw-format l-height-lg').text
+    try:
+        descripcion = soup.find('div', class_='raw-format l-height-lg').text
+    except:
+        descripcion = "No descripcion"
     try:
         habitaciones = soup.find('div', class_='icon-room').next_element.text
     except:
-        habitaciones = "N/S"
+        habitaciones = "No habitaciones"
     try:
         banos = soup.find('div', class_='icon-bath').next_element.text
     except:
-        banos = "N/S"
+        banos = "No banos"
     try:
         metros2 = soup.find('div', class_='icon-meter').next_element.text
     except:
-        metros2 = "N/S"
+        metros2 = "No metros2"
     try:
         telefono = soup.find('a', class_='button call btn icon-phone-2').next_element.text
     except:
-        telefono = "N/S"
+        telefono = "No telefono"
     ubicacionesRaw = soup.find("script",type="application/ld+json").text
     ubicacionesGroup = re.search(r"GeoCoordinates\",\"latitude\":(.*?),\"longitude\":(.*?)}", ubicacionesRaw)
     ubicaciones = []
     ubicaciones.append(ubicacionesGroup.group(1))
     ubicaciones.append(ubicacionesGroup.group(2))
+    try:
+        caracteristicas = []
+        for caracteristica in soup.find_all('div', class_='extrasItem'):
+            caracteristicas.append(caracteristica.text)
+    except:
+        caracteristicas = "No caracteristicas"
     datos_inmueble = {
         'nombre': nombre,
         'precio': precio,
@@ -116,7 +125,8 @@ def scrapear_inmueble(url_privada):
         'banos': banos,
         'metros2': metros2,
         'telefono': telefono,
-        'ubicacion': ubicaciones
+        'ubicacion': ubicaciones,
+        'caracteristicas': caracteristicas
     }
     #print(datos_inmueble)
     return datos_inmueble
