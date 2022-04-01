@@ -1,8 +1,10 @@
 import re
-from types import NoneType
+from urllib import request
+from numpy import true_divide
+#from types import NoneType
 import requests
 from bs4 import BeautifulSoup
-import pandas
+import pandas as pd
 
 # esta función transforma la localidad (en formato ingresado) a formato url de la página yaencontre.com
 # ejemplo: las rozas de madrid -> rozas-de-madrid-las
@@ -65,16 +67,34 @@ headers = {
 # esta funcion obtiene una lista con las direcciones web de todos los inmuebles de la página yaencontre.com tras haber filtrado por localidad y tipo de inmueble
 def obtener_url_privada_inmueble(url):
     hrefs = []
-    for i in range(1,5):
-        soup = BeautifulSoup(requests.get(url+ "/pag-" + str(i), headers=headers).text, 'html.parser')
+    lista_paginas = paginacion(url)
+    for pagina in lista_paginas:
+        soup = BeautifulSoup(requests.get(pagina, headers=headers).text, 'html.parser')
         lista_inmuebles = soup.find_all('article', class_='ThinPropertyList property-info pointer pos-rel')
         for inmueble in lista_inmuebles:
             h2 = inmueble.find('h2', class_='title d-ellipsis logo-aside')
             href = h2.find('a')['href']
             hrefs.append(baseurl + href)
-    #print(len(hrefs))
-    #print(hrefs)
+    print(len(hrefs))
+    print(hrefs)
     return hrefs
+
+# esta funcion obtene las direcciones (y el numero) de paginas dentro de la url principal pasada a la funcion
+def paginacion(url):
+    print(url)
+    soup = BeautifulSoup(requests.get(url, headers=headers).text, 'html.parser') 
+    lista_urls = []
+    lista_urls.append(url)
+    siguiente = True
+    i = 2
+    if soup.find('span', class_='icon-arrow-right-2') is None:
+        siguiente = False
+    while siguiente == True:
+        url_lista = url + "/pag-" + str(i)
+        i = i + 1
+        lista_urls.append(url_lista)
+    print(lista_urls)
+    return lista_urls
 
 # esta funcion obtiene los datos de un inmueble de la página yaencontre.com tras haber obtenido la url de dicho inmueble privada
 def scrapear_inmueble(url_privada):
