@@ -1,5 +1,4 @@
 import re
-from urllib import request
 from numpy import true_divide
 import requests
 from bs4 import BeautifulSoup
@@ -38,7 +37,7 @@ def transformar_localidad_url(cadena):
 
 # funcion aux 2: esta funcion filtra la página yaencontre.com por localidad y tipo de inmueble para obtener la url
 def filtrar_inmuebles(baseurl):
-    print("Tipo de inmueble\n 1. Edificios \n 2. Negocios \n 3. Pisos \n 4. Garajes \n 5. Casas \n 6. Terrenos \n 7. Naves \n 8. Obra nueva \n 9. Oficinas \n 10. Locales \n 11. Trasteros \n#########################")
+    print("Tipo de inmueble\n 1. Edificios \n 2. Negocios \n 3. Pisos \n 4. Garajes \n 5. Casas \n 6. Terrenos \n 7. Naves \n 8. Oficinas \n 9. Locales \n#########################")
     op = int(input("Elige que inmueble necesita: "))
     localidad = input("Elige la localidad: ")
     localidad_transformada = transformar_localidad_url(localidad)
@@ -57,17 +56,14 @@ def filtrar_inmuebles(baseurl):
     elif op == 7:
         url_filtrada = baseurl + '/venta/naves/' + localidad_transformada
     elif op == 8:
-        url_filtrada = baseurl + '/venta/obra-nueva/' + localidad_transformada
-    elif op == 9:
         url_filtrada = baseurl + '/venta/oficinas/' + localidad_transformada
-    elif op == 10:
+    elif op == 9:
         url_filtrada = baseurl + '/venta/locales/' + localidad_transformada
-    elif op == 11:
-        url_filtrada = baseurl + '/venta/traseteros/' + localidad_transformada
     return url_filtrada
 
 # funcion 1: esta funcion obtiene las urls privadas de cada inmueble, además se realiza la paginacion
 def obtener_url_privadas(url):
+    print(url)
     hrefs = []
     puntero = True
     actual = url
