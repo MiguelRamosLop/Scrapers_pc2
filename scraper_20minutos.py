@@ -71,16 +71,16 @@ def scraper_20minutos(url):
         print("Error fetching page")
         exit()
     else:
-        content = response.content
-        if content:
-            print("Pagina encontrada")
-            lista_urls = obtener_url_privadas(url_filtrada)
-            lista_datos = []
-            for href in lista_urls:
-                datos = scrapear_noticia(href)
-                lista_datos.append(datos)
-                #print(datos)
-            print(lista_datos)
+        print("Pagina encontrada")
+        lista_urls = obtener_url_privadas(url_filtrada)
+        lista_datos = []
+        for href in lista_urls:
+            datos = scrapear_noticia(href)
+            lista_datos.append(datos)
+            #print(datos)
+        #print(lista_datos)
+        print("Inmuebles obtenidos")
+    # output: lista de diccionarios por cada inmueble: [{datos inmueble 1},{datos inmueble 2}]
     return lista_datos
 
 #print(filtrar_localidad(baseurl))
