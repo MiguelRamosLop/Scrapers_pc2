@@ -21,6 +21,7 @@ def filtrar_localidad(base_url):
 
 # funcion 1: esta funcion obtiene las urls privadas de cada item, además se realiza la paginacion
 def obtener_url_privadas(url):
+    #print(url)
     hrefs = []
     puntero = True
     actual = url
@@ -32,12 +33,12 @@ def obtener_url_privadas(url):
             h1 = noticia.find('h1')
             href = h1.find('a')['href']
             hrefs.append(href)
-        if (soup.find('li', class_='last') and i < 3):
+        if (soup.find('li', class_='last') and i < 5):
             actual = re.sub('busqueda/','busqueda/' + str(i) + '/', url)
             i = i + 1
         else:
             puntero = False
-    print(len(hrefs))
+    #print(len(hrefs))
     #print(hrefs)
     return hrefs
 
@@ -61,18 +62,26 @@ def scrapear_noticia(url_privada):
     }
     return datos_noticia
 
-# esta funcion obtiene una lista con los datos de todos los inmuebles de la página yaencontre.com tras haber obtenido la url de dicho inmueble
+# esta funcion obtiene una lista con los datos de todos los inmuebles de la página 20minutos.com tras haber obtenido la url de dicho inmueble
 # unifica todo lo anterior en una sola función  
 def scraper_20minutos(url):
     url_filtrada = filtrar_localidad(url)
-    lista_urls_privadas = obtener_url_privadas(url_filtrada)
-    lista_datos = []
-    for href in lista_urls_privadas:
-        datos = scrapear_noticia(href)
-        lista_datos.append(datos)
-        #print(datos)
-    print(lista_datos)
-    return lista_urls_privadas
+    response = requests.get(url_filtrada)
+    if response.status_code != 200:
+        print("Error fetching page")
+        exit()
+    else:
+        content = response.content
+        if content:
+            print("Pagina encontrada")
+            lista_urls = obtener_url_privadas(url_filtrada)
+            lista_datos = []
+            for href in lista_urls:
+                datos = scrapear_noticia(href)
+                lista_datos.append(datos)
+                #print(datos)
+            print(lista_datos)
+    return lista_datos
 
 #print(filtrar_localidad(baseurl))
 #obtener_url_privadas(baseurl)

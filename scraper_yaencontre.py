@@ -63,7 +63,7 @@ def filtrar_inmuebles(baseurl):
 
 # funcion 1: esta funcion obtiene las urls privadas de cada inmueble, además se realiza la paginacion
 def obtener_url_privadas(url):
-    print(url)
+    #print(url)
     hrefs = []
     puntero = True
     actual = url
@@ -80,7 +80,7 @@ def obtener_url_privadas(url):
             i = i + 1
         else:
             puntero = False
-    print(len(hrefs))
+    #print(len(hrefs))
     #print(hrefs)
     return hrefs
 
@@ -143,13 +143,21 @@ def scrapear_inmueble(url_privada):
 # unifica todo lo anterior en una sola función  
 def scraper_yaencontre(url):
     url_filtrada = filtrar_inmuebles(url)
-    lista_urls = obtener_url_privadas(url_filtrada)
-    lista_datos = []
-    for href in lista_urls:
-        datos = scrapear_inmueble(href)
-        lista_datos.append(datos)
-        #print(datos)
-    print(lista_datos)
+    response = requests.get(url_filtrada)
+    if response.status_code != 200:
+        print("Error fetching page")
+        exit()
+    else:
+        content = response.content
+        if content:
+            print("Pagina encontrada")
+            lista_urls = obtener_url_privadas(url_filtrada)
+            lista_datos = []
+            for href in lista_urls:
+                datos = scrapear_inmueble(href)
+                lista_datos.append(datos)
+                #print(datos)
+            print(lista_datos)
     # output: lista de diccionarios por cada inmueble: [{datos inmueble 1},{datos inmueble 2}]
     return lista_datos
 
