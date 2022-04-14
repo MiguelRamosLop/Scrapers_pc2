@@ -83,7 +83,7 @@ def scrapear_noticia(url_privada):
     else:
         return 
 
-# esta funcion obtiene una lista con los datos de todos los inmuebles de la página elmundo.com tras haber obtenido la url de dicho inmueble
+# esta funcion obtiene una lista con los datos de todas las noticias de la página elmundo.com tras haber obtenido la url de dicho inmueble
 # unifica todo lo anterior en una sola función  
 def scraper_elmundo(url):
     url_filtrada = filtrar_localidad(url)
@@ -102,7 +102,7 @@ def scraper_elmundo(url):
         #print(lista_urls_privadas)
         #print(lista_datos)
         print("Inmuebles obtenidos")
-    # output: lista de diccionarios por cada inmueble: [{datos inmueble 1},{datos inmueble 2}]
+   # output: lista de diccionarios por cada noticia: [{datos noticia 1},{datos noticia 2}]
     return lista_datos
 
 #print(filtrar_localidad(baseurl))
