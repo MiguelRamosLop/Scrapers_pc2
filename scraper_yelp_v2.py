@@ -47,9 +47,42 @@ def obtener_url_privadas(url):
 # funcion 2: esta funcion obtiene el data de interes de cada item de la página yelp.com tras haber obtenido la url de dicho item privada
 def scrapear_lugar(url_privada):
     soup = BeautifulSoup(requests.get(url_privada, headers=headers).text, 'html.parser')
-    title = soup.find('h1', class_="css-12dgwvn").text
+    try:
+      title = soup.find('h1', class_="css-12dgwvn").text
+    except: 
+      title = "No titulo"
+    try:
+        datos_ubicacion = []
+        [datos_ubicacion.append(data_ubi.text) for data_ubi in soup.find_all(class_="raw__09f24__T4Ezm")]
+    except:
+        datos_ubicacion = "No datos ubicacion"
+    try:
+      amenities = [my_tag.text for my_tag in soup.find_all(class_="css-1p9ibgf")]
+      phone = amenities[-2]
+      if re.match(r'\d{3}\s\d{3}\s\d{3}', phone):
+        phone = phone
+      else:
+        phone = "No telefono"
+    except:
+      phone = "No telefono"
+    try:
+      tipo_establecimiento = [my_tag.text for my_tag in soup.find_all(class_="css-1fdy0l5")]
+      tipo_establecimiento = tipo_establecimiento[1:-1]
+    except:
+      tipo_establecimiento = "No tipo establecimiento"
+    try:
+      puntuacion_local = soup.find('div', class_='i-stars__09f24__M1AR7')
+      puntuacion_final = str(puntuacion_local['aria-label'])
+      puntuacion_resultante = re.sub(r'Puntuación de ','', puntuacion_final)
+      puntuacion_resultante = re.sub(r' estrellas','', puntuacion_resultante)
+    except:
+      puntuacion_resultante = "No tiene"
     datos_lugar = {
-      'titulo': title
+      'titulo': title,
+      'ubicacion': datos_ubicacion,
+      'tipo de establecimiento': tipo_establecimiento,
+      'telefono': phone,
+      'puntuacion': puntuacion_resultante
     }
     return datos_lugar
 
