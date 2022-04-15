@@ -23,10 +23,11 @@ def filtrado(base_url):
 
 # funcion 1: esta funcion obtiene las urls privadas de cada item, además se realiza la paginacion
 def obtener_url_privadas(url):
+    print(url)
     hrefs = []
     puntero = True
     actual = url
-    i = 1
+    i = 2
     while (puntero):
         soup = BeautifulSoup(requests.get(actual, headers=headers).text, 'html.parser')
         lista_lugares = soup.find_all("span", class_="css-1egxyvc")
@@ -34,14 +35,14 @@ def obtener_url_privadas(url):
             href = lugar.find('a')['href']
             href_completa = baseurl + href
             hrefs.append(href_completa)
-        if (soup.find('svg', class_='icon_svg')):
+        if (soup.find('svg', class_='icon_svg') and i < 2):
             actual = url + "&start=" + str(i) + "0"
             i = i + 1 
         else:
             puntero = False
-    print(i)
-    print(len(hrefs))
-    print(hrefs)
+    #print(i)
+    #print(len(hrefs))
+    #print(hrefs)
     return hrefs
 
 # funcion 2: esta funcion obtiene el data de interes de cada item de la página yelp.com tras haber obtenido la url de dicho item privada
@@ -77,12 +78,41 @@ def scrapear_lugar(url_privada):
       puntuacion_resultante = re.sub(r' estrellas','', puntuacion_resultante)
     except:
       puntuacion_resultante = "No tiene"
+
+    try:
+      coordenadas = []
+      regex = r"center=(-?\d+\.\d+)%2C(-?\d+\.\d+)"
+      maps = soup.find('div', class_="container__09f24__fZQnf border-color--default__09f24__NPAKY overflow--hidden__09f24___ayzG")
+      srcset = maps.find('img')['srcset']
+      coordenadas = re.findall(regex, srcset)
+      lat_lon = coordenadas[-1]
+    except: 
+      lat_lon = "No lat_lon"
+
+    try:
+      lista_comentarios = []
+      comentarios = soup.find_all('div', class_=" review__09f24__oHr9V border-color--default__09f24__NPAKY")
+      for comentario in comentarios:
+            usuario = comentario.find('span', class_="fs-block css-ux5mu6").text
+            texto_comentario = comentario.find('p', class_="comment__09f24__gu0rG css-qgunke").text
+            fecha = comentario.find('span', class_="css-chan6m").text
+            comentario = {
+              'usuario': usuario, 
+              'texto': texto_comentario, 
+              'fecha': fecha
+            }
+            lista_comentarios.append(comentario)
+    except:
+      lista_comentarios = "No comentarios"
+    
     datos_lugar = {
       'titulo': title,
       'ubicacion': datos_ubicacion,
       'tipo de establecimiento': tipo_establecimiento,
       'telefono': phone,
-      'puntuacion': puntuacion_resultante
+      'puntuacion': puntuacion_resultante,
+      'coordenadas': lat_lon,
+      'comentarios': lista_comentarios
     }
     return datos_lugar
 
@@ -109,5 +139,5 @@ def scraper_yelp(url):
     return lista_datos
 
 #print(filtrado(baseurl))
-obtener_url_privadas(filtrado(baseurl))
-#scraper_yelp(baseurl)
+#obtener_url_privadas(filtrado(baseurl))
+print(scraper_yelp(baseurl))
