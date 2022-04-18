@@ -107,4 +107,5 @@ def scraper_elmundo(url):
 
 #print(filtrar_localidad(baseurl))
 #obtener_url_privadas(baseurl)
-scraper_elmundo(baseurl)
+print(scraper_elmundo(baseurl)) 
+# si devuleve un [] es que no hay ningun item dado esa localidad y filtro

@@ -85,4 +85,5 @@ def scraper_20minutos(url):
 
 #print(filtrar_localidad(baseurl))
 #obtener_url_privadas(baseurl)
-scraper_20minutos(baseurl)
+print(scraper_20minutos(baseurl))
+# si devuleve un [] es que no hay ningun item dado esa localidad y filtro

@@ -40,6 +40,7 @@ def filtrar_inmuebles(baseurl):
     print("Tipo de inmueble\n 1. Edificios \n 2. Negocios \n 3. Pisos \n 4. Garajes \n 5. Casas \n 6. Terrenos \n 7. Naves \n 8. Oficinas \n 9. Locales \n#########################")
     op = int(input("Elige que inmueble necesita: "))
     localidad = input("Elige la localidad: ")
+    # a la hora de ingresar la localidad recomendamos echar un vistazo antes a si existe en yaencontre, ya que puede tener un formato determinado.
     localidad_transformada = transformar_localidad_url(localidad)
     if op == 1:
         url_filtrada = baseurl + '/venta/edificios/' + localidad_transformada
@@ -63,7 +64,7 @@ def filtrar_inmuebles(baseurl):
 
 # funcion 1: esta funcion obtiene las urls privadas de cada inmueble, además se realiza la paginacion
 def obtener_url_privadas(url):
-    #print(url)
+    print(url)
     hrefs = []
     puntero = True
     actual = url
@@ -161,4 +162,4 @@ def scraper_yaencontre(url):
     return lista_datos
 
 # llamamos a la función principal
-scraper_yaencontre(baseurl)
+print(scraper_yaencontre(baseurl))
