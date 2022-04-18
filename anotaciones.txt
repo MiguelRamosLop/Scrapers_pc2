@@ -9,10 +9,11 @@ que escribir "Las rozas de madrid"
 - En cuanto a la mayoria de scrapers permiten hacer multiples requests sin limitaciones, sin embargo, Yelp da algunos 
 problemas relacionados con esto. Una vez realizadas algunas requests a Yelp, este te impedirá seguir haciendo (y aunque
 si les envias un correo te dan los permisos) creemos que es mejor usar otras estrategias que permitan seguir scrapeando
-al momento. Para ello nos apoyamos en un Proxy, concretamente en windscribe (completamente gratuito) el cual es una 
+al momento. Para ello nos apoyamos en un Proxy, concretamente en Windscribe (completamente gratuito. Puedes poner solamente 
+la extensión en Chrome y utilizar Replit y no descargar asi nada. Enlace: https://esp.windscribe.com/download ) el cual es una 
 extensión de google con la cual podemos acceder a Yelp con otra ip y poder ir haciendo las request sin limitaciones. Además,
-deberemos también usar otra aplicacion como replit para ejecutar el código en la nube dado que desde el visual será imposible
-una vez superado ese limite de requests.
+deberemos también usar otra aplicacion como replit( Enlace: https://replit.com/ ) para ejecutar el código en la nube dado que 
+desde el visual será imposible una vez superado ese limite de requests.
 
 - En todos los scrapers quedan comentadas diferentes "pruebas" que hemos ido comprobando durante la realización de cada uno.
 Aunque estan comentadas, es posible y hasta recomendable, descomentar algunas para poder ir viendo el propio avance del 
