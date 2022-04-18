@@ -49,7 +49,7 @@ def obtener_url_privadas(url):
     return hrefs
 
 
-# funcion 2: esta funcion obtiene los datos de cada item de la página elmundo.com tras haber obtenido la url de dicho item privada
+# funcion 2: esta funcion obtiene los datos de cada item de la página elmundo.com
 def scrapear_noticia(url_privada):
     soupNoticia = BeautifulSoup(requests.get(url_privada, headers=headers).text, 'html.parser')
     premium = soupNoticia.find('div', {'class':'ue-c-article__premium-tag'})
@@ -83,8 +83,7 @@ def scrapear_noticia(url_privada):
     else:
         return 
 
-# esta funcion obtiene una lista con los datos de todas las noticias de la página elmundo.com tras haber obtenido la url de dicho inmueble
-# unifica todo lo anterior en una sola función  
+# esta funcion obtiene una lista con los datos de todas las noticias de la página elmundo.com
 def scraper_elmundo(url):
     url_filtrada = filtrar_localidad(url)
     response = requests.get(url_filtrada)
@@ -101,7 +100,7 @@ def scraper_elmundo(url):
             #print(datos)
         #print(lista_urls_privadas)
         #print(lista_datos)
-        print("Inmuebles obtenidos")
+        print("Noticias obtenidas")
    # output: lista de diccionarios por cada noticia: [{datos noticia 1},{datos noticia 2}]
     return lista_datos
 

@@ -37,7 +37,7 @@ def obtener_url_privadas(url):
             if (lugar.find('div', class_="i-stars__09f24__M1AR7")):
               hrefs.append(href_completa)
         if (soup.find('span', class_="icon--24-chevron-right-v2 navigation-button-icon__09f24__Bmrde css-1kq79li") and i < 2):
-          # la condicion i < 4 esta hecha para que no haga tantas iteracciones. (En algunos casos la baseurl guarda hasta 24 paginas de resultados por lo que con esta condicion limitamos los outputs)
+          # la condicion i < 2 esta hecha para que no haga tantas iteracciones. (En algunos casos la baseurl guarda hasta 24 paginas de resultados por lo que con esta condicion limitamos los outputs)
             actual = url + "&start=" + str(i) + "0"
             i = i + 1 
         else:
@@ -159,7 +159,7 @@ def scraper_yelp(url):
             #print(datos)
         #print(lista_urls_privadas)
         #print(lista_datos)
-        print("Inmuebles obtenidos")
+        print("Referencias obtenidas")
     # output: lista de diccionarios por cada noticia: [{datos noticia 1},{datos noticia 2}]
     return lista_datos
   
