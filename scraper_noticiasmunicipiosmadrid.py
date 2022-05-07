@@ -1,24 +1,28 @@
 import re
+from attr import attr, attrs
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 
+
 # direccion base del scraper
 # a esta dirección se le aplicaran diferentes filtros y formatos segun las opciones del usuario
-baseurl = "https://www.20minutos.es/"
+baseurl = "https://noticiasparamunicipios.com/"
 
 # declaramos los headers para la petición
 headers = {
     'User-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36'
 }
 
-# funcion aux 2: esta funcion filtra la página 20minutos.com por localidad para obtener la url
+# funcion aux 1: esta funcion filtra la página noticiasparamunicipios.com por localidad para obtener la url
 def filtrar_localidad(base_url):
     localidad = input("Ingrese localidad: ")
     localidad_adaptada = localidad.replace(" ", "+")
     if localidad_adaptada: 
-        url_filtrada = base_url + "busqueda/?q=" + localidad_adaptada + "&sort_field=&category=&publishedAt%5Bfrom%5D=&publishedAt%5Buntil%5D="
+        url_filtrada = base_url + "?s=" + localidad_adaptada
     return url_filtrada
+
+
 
 # funcion 1: esta funcion obtiene las urls privadas de cada item, además se realiza la paginacion
 def obtener_url_privadas(url):
@@ -29,13 +33,12 @@ def obtener_url_privadas(url):
     i = 2
     while(puntero):
         soup = BeautifulSoup(requests.get(actual, headers=headers).text, 'html.parser')
-        lista_noticias = soup.find_all('article', class_='media')
+        lista_noticias = soup.find_all('h2', class_='entry-title')
         for noticia in lista_noticias:
-            h1 = noticia.find('h1')
-            href = h1.find('a')['href']
+            href = noticia.find('a')['href']
             hrefs.append(href)
-        if (soup.find('li', class_='last') and i < 5):
-            actual = re.sub('busqueda/','busqueda/' + str(i) + '/', url)
+        if (soup.find('svg', class_='svg-icon') and i < 2):
+            actual = re.sub('https://noticiasparamunicipios.com/','https://noticiasparamunicipios.com/page/' + str(i) + '/', url)
             i = i + 1
         else:
             puntero = False
@@ -43,31 +46,26 @@ def obtener_url_privadas(url):
     #print(hrefs)
     return hrefs
 
-
-# funcion 2: esta funcion obtiene los datos de cada item de la página 20minutos.com
+# funcion 2: esta funcion obtiene los datos de cada item de la página noticiasparamunicipios.com
 def scrapear_noticia(url_privada):
     soupNoticia = BeautifulSoup(requests.get(url_privada, headers=headers).text, 'html.parser')
+    content = soupNoticia.find('div', {'class':'entry-content'})
     try:
-        titulo = soupNoticia.find('h1', {'class':'article-title'}).text
+        titulo = soupNoticia.find('h1', {'class':'entry-title'}).text
     except: 
         titulo = 'No titulo'
     try:
-        entradilla = soupNoticia.find('div', {'id':'m35-34-36'}).text
-    except: 
-        entradilla = 'No entradilla'
-    try:
-        texto = soupNoticia.find('div', {'class':'article-text'}).text
+        texto = " ".join([p.text for p in content.find_all('p')])
     except: 
         texto = 'No texto'
     datos_noticia = {
         'titulo': titulo,
-        'entradilla': entradilla,
         'texto': texto
     }
     return datos_noticia
 
 # esta funcion obtiene una lista con los datos de todas las noticias de la página 20minutos.com
-def scraper_20minutos(url):
+def scraper_noticasmunipiosmadrid(url):
     url_filtrada = filtrar_localidad(url)
     response = requests.get(url_filtrada)
     if response.status_code != 200:
@@ -88,5 +86,7 @@ def scraper_20minutos(url):
 
 #print(filtrar_localidad(baseurl))
 #obtener_url_privadas(baseurl)
-print(scraper_20minutos(baseurl))
+print(scraper_noticasmunipiosmadrid(baseurl))
 # si devuleve un [] es que no hay ningun item dado esa localidad y filtro
+
+
